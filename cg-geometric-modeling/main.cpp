@@ -1,83 +1,115 @@
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
+#include <iostream>
+#include <GL/gl.h>
 #include <GL/glut.h>
-#endif
+#include <GL/freeglut.h>
+#include <math.h>
+#include <time.h>
+#include <string>
+#include <cstring>
+#include "circle.h"
+#include "numbers.h"
 
-#include <stdlib.h>
+const GLfloat tam_x = 50.0f;
+const GLfloat tam_y = 50.0f;
 
-static int slices = 16;
-static int stacks = 16;
+const GLint sy = 30;
+const GLint my = 25;
+const GLint hy = 20;
 
-/* GLUT callback Handlers */
+int hour;
+int minute;
+int second;
 
-static void resize(int width, int height)
+void drawClockPointer(float angle, GLfloat *color, GLint posY)
 {
-    const float ar = (float)width / (float)height;
+    glRotatef(-angle, 0.0f, 0.0f, 1.0f);
+
+    glBegin(GL_LINES);
+    glColor3f(color[0], color[1], color[2]);
+    glVertex2i(0, 0);
+    glVertex2i(0, posY);
+    glEnd();
+}
+
+
+void drawClockPointers() {
+    glColor3f(0.0f, 0.0f, 0.0f);
+
+    float angle_s = second * 6;
+    GLfloat color_s[3] = {1.0f, 0.0f, 0.0f};
+    drawClockPointer(angle_s, color_s, sy);
+    glLoadIdentity();
+
+    float angle_m = minute * 6;
+    GLfloat color_m[3] = {0.0f, 1.0f, 0.0f};
+    drawClockPointer(angle_m, color_m, my);
+    glLoadIdentity();
+
+    float angle_h = (hour + minute / 60.0) * 30;
+    GLfloat color_h[3] = {0.0f, 0.0f, 1.0f};
+    drawClockPointer(angle_h, color_h, hy);
+    glLoadIdentity();
+}
+
+void draw(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColor3ub(249, 168, 37);
+
+    circle(0, 0, tam_x, true);
+    drawNumbers();
+    drawClockPointers();
+
+    glFlush();
+}
+
+void resize(GLsizei width, GLsizei height)
+{
 
     glViewport(0, 0, width, height);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
+
+    if (width <= height)
+        gluOrtho2D(-tam_x, tam_x, -tam_y * height / width, tam_y * height / width);
+    else
+        gluOrtho2D(-tam_x * width / height, tam_x * width / height, -tam_y, tam_y);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
 
-static void printGLText(void)
+void move(int n)
 {
-    // http: //www.opengl-tutorial.org/intermediate-tutorials/tutorial-11-2d-text/
-}
+    // time_t currentTime = time(NULL);
+    time_t currentTime = time(0);
+    struct tm *timeInfo = localtime(&currentTime);
 
-static void drawWatch(void)
-{
-    const double time = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    const double angle = time * 90.0;
+    hour = timeInfo->tm_hour;
+    minute = timeInfo->tm_min;
+    second = timeInfo->tm_sec;
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3d(1, 0, 0);
-
-    glPushMatrix();
-    glTranslated(0, 1, -8);
-    gluDisk(gluNewQuadric(), 0, 1, 12, stacks);
-
-    glPushMatrix();
-    glTranslated(0, -0.12, 1);
-    glColor3d(0, 1, 0);
-    gluPartialDisk(gluNewQuadric(), 0, 0.9, 12, stacks, 0, angle / 4); // Seria legal para as horas
-    glPopMatrix();
-
-    glPopMatrix();
-}
-
-static void display(void)
-{
-    drawWatch();
-    glutSwapBuffers();
-}
-
-static void idle(void)
-{
     glutPostRedisplay();
+    glutTimerFunc(1000, move, 0);
 }
 
-/* Program entry point */
+void initialize(void)
+{
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+}
 
-int main(int argc, char *argv[])
+int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    glutInitWindowSize(640, 480);
-    glutInitWindowPosition(10, 10);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-
-    glutCreateWindow("GLUT Shapes");
-
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(600, 600);
+    //glutInitWindowPosition(10,10);
+    glutCreateWindow("Clock");
+    glutDisplayFunc(draw);
     glutReshapeFunc(resize);
-    glutDisplayFunc(display);
-    glutIdleFunc(idle);
-
-    glClearColor(1, 1, 1, 1);
+    glutTimerFunc(1000, move, 0);
+    initialize();
     glutMainLoop();
-
-    return EXIT_SUCCESS;
+    return 0;
 }
