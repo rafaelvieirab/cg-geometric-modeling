@@ -16,6 +16,11 @@
 					<Add option="-g" />
 					<Add directory="include" />
 				</Compiler>
+				<Linker>
+					<Add library="SOIL" />
+					<Add library="GLU" />
+					<Add library="glut" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/cg-geometric-modeling" prefix_auto="1" extension_auto="1" />
@@ -45,9 +50,11 @@
 		</Linker>
 		<Unit filename="include/circle.h" />
 		<Unit filename="include/numbers.h" />
+		<Unit filename="include/texture.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/circle.cpp" />
 		<Unit filename="src/numbers.cpp" />
+		<Unit filename="src/texture.cpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
