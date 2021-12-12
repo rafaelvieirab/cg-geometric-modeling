@@ -2,13 +2,17 @@
 #include <SOIL/SOIL.h>
 #include <iostream>
 
-void drawTexture(char* filepath, GLfloat x, GLfloat y) {
+GLint drawTexture(char* filepath, GLfloat x, GLfloat y) {
+
+
+    glEnable(GL_BLEND );
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     GLuint textureId = SOIL_load_OGL_texture(
                            filepath,
                            SOIL_LOAD_AUTO,
                            SOIL_CREATE_NEW_ID,
-                           SOIL_FLAG_INVERT_Y
+                           SOIL_FLAG_INVERT_Y | SOIL_FLAG_MIPMAPS | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
                        );
 
     if (filepath == 0) {
@@ -33,6 +37,13 @@ void drawTexture(char* filepath, GLfloat x, GLfloat y) {
         glVertex2f(-x, y);
     glEnd();
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 
     glutSwapBuffers();
+
+    return textureId;
+}
+
+void deleteTexture(GLuint textureId) {
+    glDeleteTextures(1, &textureId);
 }

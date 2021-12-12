@@ -5,11 +5,11 @@
 #include <math.h>
 #include <time.h>
 #include <string>
-#include <cstring>
 #include "circle.h"
 #include "numbers.h"
 #include <SOIL/SOIL.h>
 #include "texture.h"
+#include <stdlib.h>
 
 const GLfloat tam_x = 50.0f;
 const GLfloat tam_y = 50.0f;
@@ -25,7 +25,10 @@ int second;
 GLfloat xf, yf, win;
 GLint view_w, view_h;
 
-GLboolean upPressed = false;
+GLuint textureId;
+std::string images[3] = {"clock.png", "clock1.png", "clock2.png"};
+int positionImage = 0;
+bool stop = false;
 
 void keyBoardFunc(unsigned char key, int x, int y) {
     switch (key) {
@@ -38,6 +41,25 @@ void keyBoardFunc(unsigned char key, int x, int y) {
         case 'S':
             xf = xf - 0.1;
             yf = yf - 0.1;
+            break;
+        case '1':
+            positionImage = 0;
+            glDeleteTextures(1, &textureId);
+            break;
+        case '2':
+            positionImage = 1;
+            glDeleteTextures(1, &textureId);
+            break;
+        case '3':
+            positionImage = 2;
+            glDeleteTextures(1, &textureId);
+            break;
+        case 'x':
+        case 'X':
+            stop = true;
+            break;
+        case 27:
+            exit(0);
     }
     glutPostRedisplay();
 }
@@ -72,7 +94,7 @@ void drawClockPointers() {
 
     float angle_s = second * 6;
     GLfloat color_s[3] = {1.0f, 0.0f, 0.0f};
-    drawClockPointer(angle_s, color_s, yf - second_diff, 1.5);
+    drawClockPointer(angle_s, color_s, yf - second_diff, 1.6);
     glLoadIdentity();
 
     float angle_m = minute * 6;
@@ -96,7 +118,9 @@ void draw(void)
     //circle(0, 0, tam_x, false);
     //drawNumbers();
     drawClockPointers();
-    drawTexture("/home/fcoalex/Documentos/Desenvolvimento/cg/cg-geometric-modeling/cg-geometric-modeling/clock.png", xf, yf);
+    std::string path = "/home/fcoalex/Documentos/Desenvolvimento/cg/cg-geometric-modeling/cg-geometric-modeling/" + images[positionImage];
+    char* filepath = (char*) path.c_str();
+    textureId = drawTexture(filepath, xf, yf);
 
     glFlush();
 }
@@ -118,16 +142,18 @@ void resizeFunc(GLsizei width, GLsizei height)
 
 void moveFunc(int n)
 {
-    // time_t currentTime = time(NULL);
-    time_t currentTime = time(0);
-    struct tm *timeInfo = localtime(&currentTime);
+    if(!stop) {
+        // time_t currentTime = time(NULL);
+        time_t currentTime = time(0);
+        struct tm *timeInfo = localtime(&currentTime);
 
-    hour = timeInfo->tm_hour;
-    minute = timeInfo->tm_min;
-    second = timeInfo->tm_sec;
+        hour = timeInfo->tm_hour;
+        minute = timeInfo->tm_min;
+        second = timeInfo->tm_sec;
 
-    glutPostRedisplay();
-    glutTimerFunc(1000, moveFunc, 0);
+        glutPostRedisplay();
+        glutTimerFunc(1000, moveFunc, 0);
+    }
 }
 
 void initialize(void)
@@ -136,8 +162,6 @@ void initialize(void)
     win=2.0f;
     xf=1;
     yf=1;
-    glEnable(GL_BLEND );
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 //void update() {
@@ -160,5 +184,6 @@ int main(int argc, char **argv)
     //glutIdleFunc(update);
     initialize();
     glutMainLoop();
+
     return 0;
 }

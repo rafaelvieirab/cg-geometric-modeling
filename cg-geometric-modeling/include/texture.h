@@ -4,6 +4,7 @@
 #include <GL/freeglut.h>
 
 //void drawTexture(char* file);
-void drawTexture(char* filepath, GLfloat x, GLfloat y);
+GLint drawTexture(char* filepath, GLfloat x, GLfloat y);
+void deleteTexture(GLuint textureId);
 
 #endif // TEXTURE_H_INCLUDED

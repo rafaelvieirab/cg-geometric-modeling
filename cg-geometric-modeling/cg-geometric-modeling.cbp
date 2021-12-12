@@ -16,6 +16,11 @@
 					<Add option="-g" />
 					<Add directory="include" />
 				</Compiler>
+				<Linker>
+					<Add library="SOIL" />
+					<Add library="GLU" />
+					<Add library="glut" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/cg-geometric-modeling" prefix_auto="1" extension_auto="1" />
