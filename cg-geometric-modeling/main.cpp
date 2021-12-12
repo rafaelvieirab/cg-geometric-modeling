@@ -20,9 +20,12 @@ int hour;
 int minute;
 int second;
 
+int velocity = 1;
+
 void drawClockPointer(float angle, GLfloat *color, GLint posY)
 {
     glRotatef(-angle, 0.0f, 0.0f, 1.0f);
+    glLineWidth(3);
 
     glBegin(GL_LINES);
     glColor3f(color[0], color[1], color[2]);
@@ -31,8 +34,8 @@ void drawClockPointer(float angle, GLfloat *color, GLint posY)
     glEnd();
 }
 
-
-void drawClockPointers() {
+void drawClockPointers()
+{
     glColor3f(0.0f, 0.0f, 0.0f);
 
     float angle_s = second * 6;
@@ -53,10 +56,11 @@ void drawClockPointers() {
 
 void draw(void)
 {
+    glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT);
-    glColor3ub(249, 168, 37);
+    glColor3ub(30 + second / 8, 46 + second / 8, 68 + second);
 
-    circle(0, 0, tam_x, true);
+    circle(0, 0, tam_x);
     drawNumbers();
     drawClockPointers();
 
@@ -82,8 +86,7 @@ void resize(GLsizei width, GLsizei height)
 
 void move(int n)
 {
-    // time_t currentTime = time(NULL);
-    time_t currentTime = time(0);
+    time_t currentTime = time(NULL);
     struct tm *timeInfo = localtime(&currentTime);
 
     hour = timeInfo->tm_hour;
@@ -99,16 +102,31 @@ void initialize(void)
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    case '1':
+        velocity++;
+        break;
+    }
+
+    glutPostRedisplay();
+}
+
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(600, 600);
     //glutInitWindowPosition(10,10);
-    glutCreateWindow("Clock");
+    glutCreateWindow("Clock CG");
+
     glutDisplayFunc(draw);
+    glutKeyboardFunc(keyboard);
     glutReshapeFunc(resize);
     glutTimerFunc(1000, move, 0);
+
     initialize();
     glutMainLoop();
     return 0;

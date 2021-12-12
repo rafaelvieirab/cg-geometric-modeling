@@ -3,7 +3,7 @@
 
 #include <GL/freeglut.h>
 
-void RenderString(float x, float y, void *font, const unsigned char *str);
+void drawNumber(float x, float y, const unsigned char *str);
 
 void drawNumbers();
 
