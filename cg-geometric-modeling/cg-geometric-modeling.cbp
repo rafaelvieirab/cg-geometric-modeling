@@ -45,9 +45,11 @@
 		</Linker>
 		<Unit filename="include/circle.h" />
 		<Unit filename="include/numbers.h" />
+		<Unit filename="include/texture.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/circle.cpp" />
 		<Unit filename="src/numbers.cpp" />
+		<Unit filename="src/texture.cpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
