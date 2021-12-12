@@ -2,6 +2,8 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <GL/freeglut.h>
+#include <SOIL/SOIL.h>
+#include <stdbool.h>
 #include <math.h>
 #include <time.h>
 #include <string>
@@ -9,8 +11,8 @@
 #include "circle.h"
 #include "numbers.h"
 
-const GLfloat tam_x = 50.0f;
-const GLfloat tam_y = 50.0f;
+const GLfloat tam_x = 90.0f;
+const GLfloat tam_y = 90.0f;
 
 const GLint sy = 30;
 const GLint my = 25;
@@ -19,6 +21,17 @@ const GLint hy = 20;
 int hour;
 int minute;
 int second;
+
+GLuint Texture;
+
+GLuint loadTexture(const char* file) {
+    GLuint idTexture = SOIL_load_OGL_texture(file, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+
+    if (idTexture == 0) {
+        printf(" Error loading texture ");
+    }
+    return idTexture;
+}
 
 void drawClockPointer(float angle, GLfloat *color, GLint posY)
 {
@@ -36,17 +49,17 @@ void drawClockPointers() {
     glColor3f(0.0f, 0.0f, 0.0f);
 
     float angle_s = second * 6;
-    GLfloat color_s[3] = {1.0f, 0.0f, 0.0f};
+    GLfloat color_s[3] = {255.0f, 255.0f, 255.0f};
     drawClockPointer(angle_s, color_s, sy);
     glLoadIdentity();
 
     float angle_m = minute * 6;
-    GLfloat color_m[3] = {0.0f, 1.0f, 0.0f};
+    GLfloat color_m[3] = {255.0f, 255.0f, 255.0f};
     drawClockPointer(angle_m, color_m, my);
     glLoadIdentity();
 
     float angle_h = (hour + minute / 60.0) * 30;
-    GLfloat color_h[3] = {0.0f, 0.0f, 1.0f};
+    GLfloat color_h[3] = {255.0f, 255.0f, 255.0f};
     drawClockPointer(angle_h, color_h, hy);
     glLoadIdentity();
 }
@@ -54,17 +67,27 @@ void drawClockPointers() {
 void draw(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    glColor3ub(249, 168, 37);
+    glColor3ub(153, 0, 51);
 
-    circle(0, 0, tam_x, true);
+    circle(0, 0, 48.0f, true);
     drawNumbers();
     drawClockPointers();
 
     glFlush();
 }
 
+void defineTexture()
+{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    Texture = loadTexture("resources/background.jpg");
+}
+
 void resize(GLsizei width, GLsizei height)
 {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, Texture);
 
     glViewport(0, 0, width, height);
 

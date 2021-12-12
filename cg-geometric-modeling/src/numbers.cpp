@@ -2,7 +2,7 @@
 
 void RenderString(float x, float y, void *font, const unsigned char *str)
 {
-    glColor3ub(183, 28, 28);
+    glColor3ub(255, 255, 255);
     glRasterPos2f(x, y);
     glutBitmapString(font, str);
 }

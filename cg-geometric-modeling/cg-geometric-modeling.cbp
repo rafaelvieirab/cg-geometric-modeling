@@ -46,6 +46,7 @@
 		<Unit filename="include/circle.h" />
 		<Unit filename="include/numbers.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="resources/background.jpg" />
 		<Unit filename="src/circle.cpp" />
 		<Unit filename="src/numbers.cpp" />
 		<Extensions />
