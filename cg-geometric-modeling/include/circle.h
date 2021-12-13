@@ -3,6 +3,6 @@
 
 #include <GL/gl.h>
 
-void circle(GLfloat xc, GLfloat yc, GLfloat raio, bool fill);
+void circle(GLfloat xc, GLfloat yc, GLfloat raio);
 
 #endif
