@@ -2,7 +2,6 @@
 #include <GL/gl.h>
 #include <GL/glut.h>
 #include <GL/freeglut.h>
-#include <SOIL/SOIL.h>
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
@@ -21,17 +20,6 @@ const GLint hy = 20;
 int hour;
 int minute;
 int second;
-
-GLuint Texture;
-
-GLuint loadTexture(const char* file) {
-    GLuint idTexture = SOIL_load_OGL_texture(file, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
-
-    if (idTexture == 0) {
-        printf(" Error loading texture ");
-    }
-    return idTexture;
-}
 
 void drawClockPointer(float angle, GLfloat *color, GLint posY)
 {
@@ -76,19 +64,10 @@ void draw(void)
     glFlush();
 }
 
-void defineTexture()
-{
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    Texture = loadTexture("resources/background.jpg");
-}
 
 void resize(GLsizei width, GLsizei height)
 {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, Texture);
-
     glViewport(0, 0, width, height);
 
     glMatrixMode(GL_PROJECTION);
