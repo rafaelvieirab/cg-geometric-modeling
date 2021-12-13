@@ -1,14 +1,15 @@
 #include "numbers.h"
 
-void drawNumber(float posX, float posY, const unsigned char *str)
+void drawNumber(float posX, float posY, const unsigned char *number)
 {
-    glColor3ub(183, 28, 28);
+    glColor3ub(255, 255, 255);
     glRasterPos2f(posX, posY);
     glutBitmapString(GLUT_BITMAP_TIMES_ROMAN_24, number);
 }
 
 void drawNumbers()
 {
+
     unsigned char number_1[4] = "1";
     unsigned char number_2[4] = "2";
     unsigned char number_3[4] = "3";
