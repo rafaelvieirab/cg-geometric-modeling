@@ -11,8 +11,8 @@
 #include "texture.h"
 #include <stdlib.h>
 
-const GLfloat tam_x = 50.0f;
-const GLfloat tam_y = 50.0f;
+const GLfloat tam_x = 90.0f;
+const GLfloat tam_y = 90.0f;
 
 const GLfloat second_diff = 0.1f;
 const GLfloat minute_diff = 0.6f;
@@ -32,8 +32,9 @@ GLint view_w, view_h;
 GLuint textureId;
 std::string images[3] = {"clock.png", "clock1.png", "clock2.png"};
 int positionImage = 0;
+std::string pathImage = "/home/fcoalex/Documentos/Desenvolvimento/cg/cg-geometric-modeling/cg-geometric-modeling/";
 bool stop = false;
-bool clockWithNumbers = false;
+bool clockWithNumbers = true;
 
 void drawClockPointer(float angle, GLfloat *color, GLfloat posY, GLfloat thickness)
 {
@@ -49,43 +50,38 @@ void drawClockPointer(float angle, GLfloat *color, GLfloat posY, GLfloat thickne
     glEnd();
 }
 
-void drawClockPointers()
-{
+void drawClockPointers() {
     glColor3f(0.0f, 0.0f, 0.0f);
-
     float angle_s = second * 6;
-    GLfloat color_s[3] = {1.0f, 0.0f, 0.0f};
-    drawClockPointer(angle_s, color_s, yf - second_diff, 1.6);
-    glLoadIdentity();
-
     float angle_m = minute * 6;
-    GLfloat color_m[3] = {0.0f, 0.0f, 0.0f};
-    drawClockPointer(angle_m, color_m, yf - minute_diff, 4);
-    glLoadIdentity();
-
     float angle_h = (hour + minute / 60.0) * 30;
-    GLfloat color_h[3] = {0.0f, 0.0f, 0.0f};
-    drawClockPointer(angle_h, color_h, yf - hour_diff, 4);
-    glLoadIdentity();
-}
 
-void drawClockPointers2() {
-    glColor3f(0.0f, 0.0f, 0.0f);
+    if(clockWithNumbers) {
+        GLfloat color_s[3] = {255.0f, 255.0f, 255.0f};
+        drawClockPointer(angle_s, color_s, sy, 2);
+        glLoadIdentity();
 
-    float angle_s = second * 6;
-    GLfloat color_s[3] = {255.0f, 255.0f, 255.0f};
-    drawClockPointer(angle_s, color_s, sy, 2);
-    glLoadIdentity();
+        GLfloat color_m[3] = {255.0f, 255.0f, 255.0f};
+        drawClockPointer(angle_m, color_m, my, 2);
+        glLoadIdentity();
 
-    float angle_m = minute * 6;
-    GLfloat color_m[3] = {255.0f, 255.0f, 255.0f};
-    drawClockPointer(angle_m, color_m, my, 2);
-    glLoadIdentity();
+        GLfloat color_h[3] = {255.0f, 255.0f, 255.0f};
+        drawClockPointer(angle_h, color_h, hy, 2);
+        glLoadIdentity();
+    } else {
+        GLfloat color_s[3] = {1.0f, 0.0f, 0.0f};
+        drawClockPointer(angle_s, color_s, yf - second_diff, 1.6);
+        glLoadIdentity();
 
-    float angle_h = (hour + minute / 60.0) * 30;
-    GLfloat color_h[3] = {255.0f, 255.0f, 255.0f};
-    drawClockPointer(angle_h, color_h, hy, 2);
-    glLoadIdentity();
+        GLfloat color_m[3] = {0.0f, 0.0f, 0.0f};
+        drawClockPointer(angle_m, color_m, yf - minute_diff, 4);
+        glLoadIdentity();
+
+        GLfloat color_h[3] = {0.0f, 0.0f, 0.0f};
+        drawClockPointer(angle_h, color_h, yf - hour_diff, 4);
+        glLoadIdentity();
+    }
+
 }
 
 void drawClockWithTexture(void)
@@ -94,8 +90,8 @@ void drawClockWithTexture(void)
     glColor3ub(1, 1, 1);
 
     drawClockPointers();
-    std::string path = "/home/fcoalex/Documentos/Desenvolvimento/cg/cg-geometric-modeling/cg-geometric-modeling/" + images[positionImage];
-    char* filepath = (char*) path.c_str();
+    std::string pathStr = pathImage + images[positionImage];
+    char* filepath = (char*) pathStr.c_str();
     textureId = drawTexture(filepath, xf, yf);
 
     glFlush();
@@ -108,7 +104,7 @@ void drawClockWithNumbers(void)
 
     circle(0, 0, 48.0f);
     drawNumbers();
-    drawClockPointers2();
+    drawClockPointers();
 
     glFlush();
 }
@@ -211,7 +207,8 @@ int main(int argc, char **argv)
     glutCreateWindow("Clock");
     glutDisplayFunc(draw);
     glutReshapeFunc(resizeFunc);
-    glutKeyboardFunc(keyBoardFunc);
+    if(!clockWithNumbers)
+        glutKeyboardFunc(keyBoardFunc);
     glutTimerFunc(1000, moveFunc, 0);
 
     initialize();
