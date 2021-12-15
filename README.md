@@ -1,5 +1,9 @@
 # cg-geometric-modeling
-Trabalho 01 da disciplina de Computação Gráfica sobre Modelagem Geométrica
+Computer Graphics Project on Geometric Modeling
+
+This project is about two 2D clocks that use texture, user interactions and text.
+ 
+It is developed with C++ and OpenGl.
 
 
 ### Como executar no Visual Studio Code
